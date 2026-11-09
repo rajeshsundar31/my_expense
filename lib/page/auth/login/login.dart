@@ -13,7 +13,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -179,17 +179,17 @@ class _LoginPageState extends State<LoginPage> {
 
             // Username
             TextFormField(
-              controller: _usernameController,
+              controller: _emailController,
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.username],
               decoration: _inputDecoration(
-                label: 'Username',
+                label: 'Email',
                 icon: Icons.person_outline_rounded,
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Enter your username';
+                  return 'Enter your Valid Email';
                 }
                 return null;
               },
@@ -252,7 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           final success = await vm.userLogin(
-                            _usernameController.text.trim(),
+                            _emailController.text.trim(),
                             _passwordController.text,
                           );
 

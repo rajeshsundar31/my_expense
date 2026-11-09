@@ -14,109 +14,116 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  // Replace with the logged-in user's name later
-  static const String userName = 'Arun Kumar';
-
   @override
   void initState() {
     super.initState();
     // Fetch once, after the first frame (context is ready for Provider)
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<DashboardViewModel>().fetchExpenseList();
+      final viewmodel = context.read<DashboardViewModel>();
+      viewmodel.fetchExpenseList();
+      viewmodel.getUserName();
+
+      setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF4F5FB),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _ProfileHeader(name: userName),
-            const SizedBox(height: 8),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: ExpenseCreditCard(
-                userName: userName,
-                balance: 24580.50,
-                cardNumber: '4582  ••••  ••••  7391',
-                expiry: '09/29',
-              ),
-            ),
-            const SizedBox(height: 24),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                'Recent Expenses',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF1B1B2F),
+    return Consumer<DashboardViewModel>(
+      builder: (context, value, child) {
+        return Scaffold(
+          backgroundColor: const Color(0xFFF4F5FB),
+          body: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _ProfileHeader(name: value.username),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: ExpenseCreditCard(
+                    userName: value.username,
+                    balance: 24580.50,
+                    cardNumber: '4582  ••••  ••••  7391',
+                    expiry: '09/29',
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              // Rebuilds automatically when the view model calls notifyListeners()
-              child: Consumer<DashboardViewModel>(
-                builder: (context, vm, _) {
-                  if (vm.isLoading && vm.expenseDataList.isEmpty) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (vm.errorMessage != null && vm.expenseDataList.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(vm.errorMessage!),
-                          const SizedBox(height: 12),
-                          ElevatedButton(
-                            onPressed: vm.fetchExpenseList,
-                            child: const Text('Retry'),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-
-                  return RefreshIndicator(
-                    onRefresh: vm.fetchExpenseList,
-                    child: ExpenseList(
-                      expenses: vm.expenseDataList,
-                      onDelete: vm.removeExpense,
+                const SizedBox(height: 24),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    'Recent Expenses',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF1B1B2F),
                     ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const AddExpensePage()),
-          );
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Expanded(
+                  // Rebuilds automatically when the view model calls notifyListeners()
+                  child: Consumer<DashboardViewModel>(
+                    builder: (context, vm, _) {
+                      if (vm.isLoading && vm.expenseDataList.isEmpty) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-          // Expense added -> reload the list from the API
-          if (result != null && context.mounted) {
-            context.read<DashboardViewModel>().fetchExpenseList();
-          }
-        },
-        backgroundColor: const Color(0xFF3D2C8D),
-        foregroundColor: Colors.white,
-        elevation: 6,
-        icon: const Icon(Icons.add_rounded),
-        label: const Text(
-          'Add Expense',
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
-      ),
+                      if (vm.errorMessage != null &&
+                          vm.expenseDataList.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(vm.errorMessage!),
+                              const SizedBox(height: 12),
+                              ElevatedButton(
+                                onPressed: vm.fetchExpenseList,
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      return RefreshIndicator(
+                        onRefresh: vm.fetchExpenseList,
+                        child: ExpenseList(
+                          expenses: vm.expenseDataList,
+                          onDelete: vm.removeExpense,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AddExpensePage()),
+              );
+
+              // Expense added -> reload the list from the API
+              if (result != null && context.mounted) {
+                context.read<DashboardViewModel>().fetchExpenseList();
+              }
+            },
+            backgroundColor: const Color(0xFF3D2C8D),
+            foregroundColor: Colors.white,
+            elevation: 6,
+            icon: const Icon(Icons.add_rounded),
+            label: const Text(
+              'Add Expense',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+        );
+      },
     );
   }
 }

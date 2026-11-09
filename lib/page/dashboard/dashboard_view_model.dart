@@ -9,6 +9,7 @@ class DashboardViewModel extends ChangeNotifier {
   List<Expense> _expenseDataList = [];
   bool _isLoading = false;
   String? _errorMessage;
+  String username = '';
 
   // 2. Getters: the UI reads these (never the private fields)
   List<Expense> get expenseDataList => _expenseDataList;
@@ -46,6 +47,16 @@ class DashboardViewModel extends ChangeNotifier {
 
   void removeExpense(Expense expense) {
     _expenseDataList.removeWhere((e) => e.id == expense.id);
+    notifyListeners();
+  }
+
+  Future<void> getUserName() async {
+    try {
+      final response = await _api.getDetails("/username");
+      username = response['username'];
+    } catch (e) {
+      debugPrint(e as String?);
+    }
     notifyListeners();
   }
 }
