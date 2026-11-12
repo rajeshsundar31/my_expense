@@ -43,7 +43,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: ExpenseCreditCard(
                     userName: value.username,
-                    balance: 24580.50,
+                    // balance: 24580.50,
                     cardNumber: '4582  ••••  ••••  7391',
                     expiry: '09/29',
                   ),
@@ -209,14 +209,14 @@ class _ProfileHeader extends StatelessWidget {
 
 class ExpenseCreditCard extends StatelessWidget {
   final String userName;
-  final double balance;
+  // final double balance;
   final String cardNumber;
   final String expiry;
 
   const ExpenseCreditCard({
     super.key,
     required this.userName,
-    required this.balance,
+    // required this.balance,
     required this.cardNumber,
     required this.expiry,
   });
@@ -295,21 +295,21 @@ class ExpenseCreditCard extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(
-                              'Total Balance',
-                              style: TextStyle(
-                                color: Colors.white.withAlpha(190),
-                                fontSize: 11,
-                              ),
-                            ),
-                            Text(
-                              '₹ ${balance.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
+                            // Text(
+                            //   'Total Balance',
+                            //   style: TextStyle(
+                            //     color: Colors.white.withAlpha(190),
+                            //     fontSize: 11,
+                            //   ),
+                            // ),
+                            // Text(
+                            //   '₹ ${balance.toStringAsFixed(2)}',
+                            //   style: const TextStyle(
+                            //     color: Colors.white,
+                            //     fontSize: 20,
+                            //     fontWeight: FontWeight.w800,
+                            //   ),
+                            // ),
                           ],
                         ),
                       ],
